@@ -1,17 +1,22 @@
 import pygame
+from brain import Bot, Grid, Action, Direction
+
+
+class DumbBot(Bot):
+    def next_action(self, grid: Grid, bot_dirs: dict[str, Direction]) -> Action:
+        return Action.FORWARD
 
 
 class Brainless:
-    BG_COLOR = pygame.Color("#434343")
-    GRID_COLOR = pygame.Color("#131313")
-    GRID_THICK = 3
+    BG_COLOR = pygame.Color("#131313")
 
-    def __init__(self, grid_x, grid_y, cell_size):
-        self.grid_x = grid_x
-        self.grid_y = grid_y
-        self.cell_size = cell_size
+    def __init__(self, grid: Grid, bot1: Bot, bot2: Bot):
+
+        self.grid = grid
+        self.bot_dirs = self.grid.place_bots(bot1, bot2)
+
         self.viewport = pygame.Surface(
-            (self.grid_x * cell_size, self.grid_y * cell_size))
+            (self.grid.x_count * self.grid.cell_size, self.grid.y_count * self.grid.cell_size))
 
     def update(self, dt):
         pass
@@ -19,12 +24,7 @@ class Brainless:
     def render(self):
         self.viewport.fill(self.BG_COLOR)
 
-        for x in range(self.grid_x):
-            pygame.draw.line(self.viewport, self.GRID_COLOR, (x * self.cell_size,
-                             0), (x*self.cell_size, self.viewport.get_height()), self.GRID_THICK)
-        for y in range(self.grid_y):
-            pygame.draw.line(self.viewport, self.GRID_COLOR, (0,
-                             y*self.cell_size), (self.viewport.get_width(), y*self.cell_size), self.GRID_THICK)
+        self.grid.draw(self.viewport, self.bot_dirs.copy())
 
 
 window = pygame.display.set_mode(flags=pygame.RESIZABLE)
@@ -32,7 +32,11 @@ window = pygame.display.set_mode(flags=pygame.RESIZABLE)
 clock = pygame.time.Clock()
 FPS = 60
 
-brainless = Brainless(13, 13, 40)
+grid = Grid(13, 13, 40)
+bot1 = Bot("Bot1", (111, 0, 0), (214, 15, 36))
+bot2 = DumbBot("Bot2", (0, 0, 111), (52, 38, 248))
+
+brainless = Brainless(grid, bot1, bot2)
 
 run = True
 while run:

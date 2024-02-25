@@ -3,7 +3,7 @@ from brain import Bot, Grid, Action, Direction, Projectile
 from copy import deepcopy
 
 
-from example_bots import DumbBot, BlindBot
+from example_bots import DumbBot, BlindBot, RandomBot
 
 
 class Brainless:
@@ -131,9 +131,9 @@ class Brainless:
 
         if bot1_crashed or bot2_crashed:
             print(
-                f"bot1_crashed: {bot1_crashed} {'loser' if bot1_crashed else ''}")
+                f"bot1_crashed ({bot1.name}): {bot1_crashed} {'loser' if bot1_crashed else ''}")
             print(
-                f"bot2_crashed: {bot2_crashed} {'loser' if bot2_crashed else ''}")
+                f"bot2_crashed ({bot2.name}): {bot2_crashed} {'loser' if bot2_crashed else ''}")
             return False
         return True
 
@@ -152,12 +152,12 @@ clock = pygame.time.Clock()
 FPS = 60
 
 grid = Grid(13, 13, 40)
-bot1 = BlindBot()
-bot2 = DumbBot()
+bot1 = RandomBot("randombot1", (0, 111, 12), (248, 52, 38))
+bot2 = RandomBot("randombot2", (0, 0, 111), (52, 38, 248))
 
 brainless = Brainless(grid, bot1, bot2)
 
-set_sim_speed = 0.15
+set_sim_speed = 0.18
 sim_speed = set_sim_speed
 sim = False
 

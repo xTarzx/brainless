@@ -68,6 +68,8 @@ class Cell:
         self.pit = False
 
     def draw(self, surface: pygame.Surface, bot_dirs: dict[str, Direction]):
+        if self.pit:
+            return
         if self.bot:
             pygame.draw.rect(surface, self.bot.color, (self.x * self.size,
                                                        self.y*self.size, self.size, self.size))

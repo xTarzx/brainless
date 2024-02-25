@@ -46,3 +46,14 @@ class RandomBot(Bot):
                     bot_dirs: dict[str, Direction],
                     projectiles: list[Projectile]) -> Action:
         return choice([Action.FORWARD, Action.TURN_CW, Action.TURN_CC, Action.SHOOT])
+
+
+class ForwardBot(Bot):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def next_action(self,
+                    grid: Grid,
+                    bot_dirs: dict[str, Direction],
+                    projectiles: list[Projectile]) -> Action:
+        return Action.FORWARD

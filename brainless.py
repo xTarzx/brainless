@@ -1,9 +1,10 @@
 import pygame
-from brain import Bot, Grid, Action, Direction, Projectile
+from brain import Bot, Cell, Grid, Action, Direction, Projectile
 from copy import deepcopy
 
 
-from example_bots import DumbBot, BlindBot, RandomBot
+from example_bots import DumbBot, BlindBot, ForwardBot, RandomBot
+from maps import RoundMap
 
 
 class Brainless:
@@ -88,14 +89,14 @@ class Brainless:
         bot1_crashed = False
         bot2_crashed = False
 
-        bot1_cell = self.grid.grid[self.grid.get_bot_cell_idx(bot1)]
+        bot1_cell: Cell = self.grid.grid[self.grid.get_bot_cell_idx(bot1)]
         bot1_pos = pygame.Vector2(bot1_cell.x, bot1_cell.y)
         bot1_new_pos, bot1_projectiles = self.execute_action(
             bot1, bot1_action)
 
         bot2_new_pos, bot2_projectiles = self.execute_action(
             bot2, bot2_action)
-        bot2_cell = self.grid.grid[self.grid.get_bot_cell_idx(bot2)]
+        bot2_cell: Cell = self.grid.grid[self.grid.get_bot_cell_idx(bot2)]
         bot2_pos = pygame.Vector2(bot2_cell.x, bot2_cell.y)
 
         new_projectiles.extend(bot1_projectiles)
@@ -104,7 +105,13 @@ class Brainless:
         if bot1_new_pos.x < 0 or bot1_new_pos.x >= self.grid.x_count or bot1_new_pos.y < 0 or bot1_new_pos.y >= self.grid.y_count:
             bot1_crashed = True
 
+        if self.grid.cell_at(int(bot1_new_pos.x), int(bot1_new_pos.y)).pit:
+            bot1_crashed = True
+
         if bot2_new_pos.x < 0 or bot2_new_pos.x >= self.grid.x_count or bot2_new_pos.y < 0 or bot2_new_pos.y >= self.grid.y_count:
+            bot2_crashed = True
+
+        if self.grid.cell_at(int(bot2_new_pos.x), int(bot2_new_pos.y)).pit:
             bot2_crashed = True
 
         for projectile in new_projectiles:
@@ -115,7 +122,6 @@ class Brainless:
                 bot2_crashed = True
 
         if bot1_new_pos == bot2_new_pos:
-            print("CRASH")
             if bot1_action == Action.FORWARD:
                 bot2_crashed = True
             if bot2_action == Action.FORWARD:
@@ -151,9 +157,10 @@ window = pygame.display.set_mode(flags=pygame.RESIZABLE)
 clock = pygame.time.Clock()
 FPS = 60
 
-grid = Grid(13, 13, 40)
-bot1 = RandomBot("randombot1", (0, 111, 12), (248, 52, 38))
-bot2 = RandomBot("randombot2", (0, 0, 111), (52, 38, 248))
+grid = RoundMap(13, 13, 40)
+
+bot1 = DumbBot()
+bot2 = ForwardBot("forward", (0, 0, 111), (52, 38, 248))
 
 brainless = Brainless(grid, bot1, bot2)
 

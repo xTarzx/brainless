@@ -80,9 +80,10 @@ class Brainless:
 
             new_projectiles.append(
                 Projectile(new_projectile_pos.x, new_projectile_pos.y, projectile.direction))
-
-        bot1_action = bot1.next_action(deepcopy(self.grid), self.bot_dirs)
-        bot2_action = bot2.next_action(deepcopy(self.grid), self.bot_dirs)
+        bot1_action = bot1.next_action(
+            deepcopy(self.grid), self.bot_dirs, deepcopy(new_projectiles))
+        bot2_action = bot2.next_action(
+            deepcopy(self.grid), self.bot_dirs, deepcopy(new_projectiles))
 
         bot1_crashed = False
         bot2_crashed = False
@@ -92,13 +93,12 @@ class Brainless:
         bot1_new_pos, bot1_projectiles = self.execute_action(
             bot1, bot1_action)
 
-        new_projectiles.extend(bot1_projectiles)
-
         bot2_new_pos, bot2_projectiles = self.execute_action(
             bot2, bot2_action)
         bot2_cell = self.grid.grid[self.grid.get_bot_cell_idx(bot2)]
         bot2_pos = pygame.Vector2(bot2_cell.x, bot2_cell.y)
 
+        new_projectiles.extend(bot1_projectiles)
         new_projectiles.extend(bot2_projectiles)
 
         if bot1_new_pos.x < 0 or bot1_new_pos.x >= self.grid.x_count or bot1_new_pos.y < 0 or bot1_new_pos.y >= self.grid.y_count:

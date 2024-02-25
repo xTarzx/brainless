@@ -40,7 +40,7 @@ class Bot:
         self.color = color
         self.face_color = face_color
 
-    def next_action(self, grid: Grid, bot_dirs: dict[str, Direction]) -> Action:
+    def next_action(self, grid: Grid, bot_dirs: dict[str, Direction], projectiles: list[Projectile]) -> Action:
         return Action.WAIT
 
     def __eq__(self, other: Bot):

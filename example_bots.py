@@ -7,7 +7,10 @@ class DumbBot(Bot):
 
         self.rot = False
 
-    def next_action(self, grid: Grid, bot_dirs: dict[str, Direction], projectiles: list[Projectile]) -> Action:
+    def next_action(self,
+                    grid: Grid,
+                    bot_dirs: dict[str, Direction],
+                    projectiles: list[Projectile]) -> Action:
         if self.rot:
             self.rot = False
             return Action.TURN_CW
@@ -23,7 +26,10 @@ class BlindBot(Bot):
         self.actions = [Action.TURN_CC, Action.SHOOT, Action.TURN_CC]
         self.curr = -1
 
-    def next_action(self, grid: Grid, bot_dirs: dict[str, Direction], projectiles: list[Projectile]) -> Action:
+    def next_action(self,
+                    grid: Grid,
+                    bot_dirs: dict[str, Direction],
+                    projectiles: list[Projectile]) -> Action:
         self.curr += 1
         self.curr %= len(self.actions)
         return self.actions[self.curr]

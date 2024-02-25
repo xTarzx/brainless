@@ -157,9 +157,20 @@ bot2 = DumbBot()
 
 brainless = Brainless(grid, bot1, bot2)
 
+set_sim_speed = 0.15
+sim_speed = set_sim_speed
+sim = False
+
 run = True
 while run:
     dt = clock.tick(FPS)
+
+    if sim:
+        sim_speed -= dt/1000
+        if sim_speed <= 0:
+            run = brainless.update(dt)
+            sim_speed = set_sim_speed
+
     window_width, window_height = window.get_size()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -168,6 +179,11 @@ while run:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 run = brainless.update(dt)
+
+            if event.key == pygame.K_p:
+                sim = not sim
+                sim_speed = set_sim_speed
+
     brainless.render()
 
     render_width, render_height = brainless.viewport.get_size()

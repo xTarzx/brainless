@@ -5,6 +5,9 @@ from enum import Enum, auto
 
 # Ait lemme explain this shit
 # The objective of the game is to destroy your opponent's bot first
+# Bots will get destroyed if:
+#   - a projectile hits them
+#   - rammed by another bot (driven into)
 # The map is a grid defined by a continuous array of cells
 # Your task is to make an 'AI'
 # You do this by inheriting the Bot class and overriding the 'next_action' method (i recc you make it a diff file and import this for ease of use)
@@ -12,6 +15,8 @@ from enum import Enum, auto
 #   - the grid state
 #   - the bots directions ( dict[ botname, direction ] )
 # The method should return the next action your bot will perform
+# TIP:
+# You are free to override __init__, remember to initialize super class aswell (https://www.w3schools.com/python/python_inheritance.asp#:~:text=Use%20the%20super()%20Function)
 
 
 class Direction(Enum):
@@ -24,8 +29,8 @@ class Direction(Enum):
 class Action(Enum):
     WAIT = auto()
     FORWARD = auto()
-    TURN_LEFT = auto()
-    TURN_RIGHT = auto()
+    TURN_CC = auto()
+    TURN_CW = auto()
     SHOOT = auto()
 
 
@@ -37,6 +42,20 @@ class Bot:
 
     def next_action(self, grid: Grid, bot_dirs: dict[str, Direction]) -> Action:
         return Action.WAIT
+
+    def __eq__(self, other: Bot):
+        return self.name == other.name
+
+
+class Projectile:
+    def __init__(self, x, y, direction: Direction):
+        self.x = x
+        self.y = y
+        self.direction = direction
+
+    def draw(self, surface: pygame.Surface, cell_size):
+        pygame.draw.circle(surface, (255, 0, 0), (self.x*cell_size + cell_size//2,
+                                                  self.y*cell_size + cell_size//2), cell_size//4)
 
 
 class Cell:
@@ -92,6 +111,9 @@ class Grid:
             None
         return self.grid[x + y * self.x_count]
 
+    def cell_idx(self, x, y) -> int:
+        return x + y * self.x_count
+
     def place_bots(self, bot1: Bot, bot2: Bot) -> dict[str, Direction]:
         self.cell_at(1, self.y_count//2).bot = bot1
         self.cell_at(self.x_count-2, self.y_count//2).bot = bot2
@@ -101,3 +123,12 @@ class Grid:
     def draw(self, surface: pygame.Surface, bot_dirs: dict[str, Direction]):
         for cell in self.grid:
             cell.draw(surface, bot_dirs)
+
+    def get_bot_cell_idx(self, bot: Bot) -> int | None:
+        for idx, cell in enumerate(self.grid):
+            if cell.bot is None:
+                continue
+
+            if cell.bot == bot:
+                return idx
+        return None

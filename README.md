@@ -7,6 +7,7 @@ Bots will get destroyed if:
 
 - a projectile hits them
 - rammed by another bot (driven into)
+- falling on a pit or driving off the map
 
 The map is a grid defined by a continuous array of cells<br>
 Your task is to make an 'AI'<br>
@@ -16,6 +17,7 @@ You receive as arguments:
 
 - the grid state
 - the bots directions ( dict[ botname, direction ] )
+- the list of projectiles
   The method should return the next action your bot will perform
   TIP:
   You are free to override **init**, remember to initialize super class aswell (https://www.w3schools.com/python/python_inheritance.asp#:~:text=Use%20the%20super()%20Function)

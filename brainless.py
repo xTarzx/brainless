@@ -3,8 +3,7 @@ from brain import Bot, Cell, Grid, Action, Direction, Projectile
 from copy import deepcopy
 
 
-from example_bots import DumbBot, BlindBot, ForwardBot, RandomBot
-from maps import RoundMap
+from example_bots import DumbBot, GeminiBot1
 
 
 class Brainless:
@@ -157,10 +156,10 @@ window = pygame.display.set_mode(flags=pygame.RESIZABLE)
 clock = pygame.time.Clock()
 FPS = 60
 
-grid = RoundMap(13, 13, 40)
+grid = Grid(13, 13, 40)
 
-bot1 = DumbBot()
-bot2 = ForwardBot("forward", (0, 0, 111), (52, 38, 248))
+bot1 = GeminiBot1("gemini1", (0, 0, 111), (52, 38, 248))
+bot2 = GeminiBot1("gemini2", (111, 0, 13), (220, 38, 148))
 
 brainless = Brainless(grid, bot1, bot2)
 

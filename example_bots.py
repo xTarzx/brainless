@@ -1,4 +1,4 @@
-from brain import Bot, Action, Direction, Grid, Projectile
+from brain import Bot, Action, Direction, Grid, Projectile, Cell
 
 from random import choice
 

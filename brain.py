@@ -3,22 +3,6 @@ import pygame
 from enum import Enum, auto
 
 
-# Ait lemme explain this shit
-# The objective of the game is to destroy your opponent's bot first
-# Bots will get destroyed if:
-#   - a projectile hits them
-#   - rammed by another bot (driven into)
-# The map is a grid defined by a continuous array of cells
-# Your task is to make an 'AI'
-# You do this by inheriting the Bot class and overriding the 'next_action' method (i recc you make it a diff file and import this for ease of use)
-# You receive as arguments:
-#   - the grid state
-#   - the bots directions ( dict[ botname, direction ] )
-# The method should return the next action your bot will perform
-# TIP:
-# You are free to override __init__, remember to initialize super class aswell (https://www.w3schools.com/python/python_inheritance.asp#:~:text=Use%20the%20super()%20Function)
-
-
 class Direction(Enum):
     UP = pygame.Vector2(0, -1)
     DOWN = pygame.Vector2(0, 1)
@@ -126,11 +110,15 @@ class Grid:
         for cell in self.grid:
             cell.draw(surface, bot_dirs)
 
-    def get_bot_cell_idx(self, bot: Bot) -> int | None:
+    def get_bot_cell_idx(self, bot: Bot | str) -> int | None:
         for idx, cell in enumerate(self.grid):
             if cell.bot is None:
                 continue
 
-            if cell.bot == bot:
-                return idx
+            if isinstance(bot, str):
+                if cell.bot.name == bot:
+                    return idx
+            else:
+                if cell.bot == bot:
+                    return idx
         return None

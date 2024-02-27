@@ -91,8 +91,11 @@ class IDKBot(Bot):
 
         for projectile in projectiles:
             if self.is_projectile_toward(bot_cell, projectile):
-                self.fleeing = True
-                return choice([Action.TURN_CW, Action.TURN_CC])
+                if projectile.direction == bot_dir or projectile.direction == bot_dir.opposite():
+                    self.fleeing = True
+                    return choice([Action.TURN_CW, Action.TURN_CC])
+
+                return Action.FORWARD
 
         if self.is_in_sight(bot_cell, bot_dir, other_bot_cell):
             return Action.SHOOT
@@ -116,14 +119,14 @@ class IDKBot(Bot):
             match bot_dir:
                 case Direction.LEFT:
                     if bot_cell.y < other_bot_cell.y:
-                        return Action.TURN_CW
-                    else:
                         return Action.TURN_CC
+                    else:
+                        return Action.TURN_CW
                 case Direction.RIGHT:
                     if bot_cell.y < other_bot_cell.y:
-                        return Action.TURN_CC
-                    else:
                         return Action.TURN_CW
+                    else:
+                        return Action.TURN_CC
                 case _:
                     return choice([Action.TURN_CW, Action.TURN_CC])
 

@@ -121,6 +121,7 @@ class Brainless:
 
             if bot_new_pos.x < 0 or bot_new_pos.x >= self.grid.x_count or bot_new_pos.y < 0 or bot_new_pos.y >= self.grid.y_count:
                 bots_crashed[bot.name] |= True
+                continue
 
             if self.grid.cell_at(int(bot_new_pos.x), int(bot_new_pos.y)).pit:
                 bots_crashed[bot.name] |= True
@@ -144,6 +145,8 @@ class Brainless:
                     bots_crashed[bot.name] |= True
 
         for bot in self.bots:
+            if bots_crashed[bot.name]:
+                continue
             bot_cell = self.grid.grid[self.grid.get_bot_cell_idx(bot)]
             bot_cell.bot = None
 
@@ -181,7 +184,7 @@ FPS = 60
 grid = Grid(13, 13, 40)
 
 bot1 = IDKBot("bot1")
-bot2 = IDKBot("bot2")
+bot2 = IDKBot("bot2", (13, 52, 135), (0, 0, 255))
 
 brainless = Brainless(grid, bot1, bot2)
 

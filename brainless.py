@@ -3,7 +3,7 @@ from brain import Bot, Cell, Grid, Action, Direction, Projectile
 from copy import deepcopy
 
 
-from example_bots import TestBot1, TestBot2
+from example_bots import IDKBot, TestBot1, TestBot2
 
 
 class Brainless:
@@ -180,8 +180,8 @@ FPS = 60
 
 grid = Grid(13, 13, 40)
 
-bot1 = TestBot1()
-bot2 = TestBot2()
+bot1 = IDKBot("bot1")
+bot2 = IDKBot("bot2")
 
 brainless = Brainless(grid, bot1, bot2)
 

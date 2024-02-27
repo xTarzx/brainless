@@ -93,6 +93,8 @@ class Grid:
                      for y in range(self.x_count) for x in range(self.y_count)]
 
     def cell_at(self, x, y) -> Cell:
+        x = int(x)
+        y = int(y)
         if x < 0 or x >= self.x_count or y < 0 or y >= self.y_count:
             None
         return self.grid[x + y * self.x_count]

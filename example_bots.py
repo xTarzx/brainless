@@ -178,23 +178,24 @@ class TestBot1(Bot):
     def __init__(self, name="testbot1", color=(0, 0, 111), face_color=(52, 38, 248)):
         super().__init__(name, color, face_color)
 
-        self.wait = False
+        self.shoot = True
 
     def next_action(self, grid: Grid, bot_dirs: dict[str, Direction], projectiles: list[Projectile]) -> Action:
-        if self.wait:
-            return Action.WAIT
-
-        return Action.SHOOT
+        if self.shoot:
+            self.shoot = False
+            return Action.SHOOT
+        return Action.WAIT
 
 
 class TestBot2(Bot):
     def __init__(self, name="testbot2", color=(0, 0, 111), face_color=(248, 38, 31)):
         super().__init__(name, color, face_color)
 
-        self.wait = False
+        self.wait = True
 
     def next_action(self, grid: Grid, bot_dirs: dict[str, Direction], projectiles: list[Projectile]) -> Action:
         if self.wait:
+            self.wait = False
             return Action.WAIT
 
         return Action.FORWARD

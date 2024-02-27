@@ -71,7 +71,12 @@ class Brainless:
         return new_pos, projectiles
 
     def update(self, dt) -> bool:
-        new_projectiles = []
+        bots_actions: dict[str, Action] = {}
+        bots_crashed: dict[str, bool] = {bot.name: False for bot in self.bots}
+        bots_new_pos: dict[str, pygame.Vector2] = {}
+        bots_projectiles: dict[str, list[Projectile]] = {}
+
+        new_projectiles: list[Projectile] = []
         for projectile in self.projectiles:
             new_projectile_pos = pygame.Vector2(
                 projectile.x, projectile.y) + projectile.direction.value
@@ -79,13 +84,21 @@ class Brainless:
             if new_projectile_pos.x < 0 or new_projectile_pos.x >= self.grid.x_count or new_projectile_pos.y < 0 or new_projectile_pos.y >= self.grid.y_count:
                 continue
 
+            next_cell = self.grid.cell_at(
+                int(new_projectile_pos.x), int(new_projectile_pos.y))
+            if next_cell.bot:
+                bot_dir = self.bot_dirs[next_cell.bot.name]
+                if bot_dir == Direction.UP and projectile.direction == Direction.DOWN:
+                    bots_crashed[next_cell.bot.name] |= True
+                if bot_dir == Direction.DOWN and projectile.direction == Direction.UP:
+                    bots_crashed[next_cell.bot.name] |= True
+                if bot_dir == Direction.LEFT and projectile.direction == Direction.RIGHT:
+                    bots_crashed[next_cell.bot.name] |= True
+                if bot_dir == Direction.RIGHT and projectile.direction == Direction.LEFT:
+                    bots_crashed[next_cell.bot.name] |= True
+
             new_projectiles.append(
                 Projectile(new_projectile_pos.x, new_projectile_pos.y, projectile.direction))
-
-        bots_actions: dict[str, Action] = {}
-        bots_crashed: dict[str, bool] = {}
-        bots_new_pos: dict[str, pygame.Vector2] = {}
-        bots_projectiles: dict[str, list[Projectile]] = {}
 
         for bot in self.bots:
             bots_actions[bot.name] = bot.next_action(
@@ -107,10 +120,10 @@ class Brainless:
             bot_new_pos = bots_new_pos[bot.name]
 
             if bot_new_pos.x < 0 or bot_new_pos.x >= self.grid.x_count or bot_new_pos.y < 0 or bot_new_pos.y >= self.grid.y_count:
-                bots_crashed[bot.name] = True
+                bots_crashed[bot.name] |= True
 
             if self.grid.cell_at(int(bot_new_pos.x), int(bot_new_pos.y)).pit:
-                bots_crashed[bot.name] = True
+                bots_crashed[bot.name] |= True
 
             for other_bot in self.bots:
                 if bot.name != other_bot.name:
@@ -120,7 +133,7 @@ class Brainless:
                             bots_crashed[other_bot.name] = True
 
                         if bots_actions[other_bot.name] == Action.FORWARD:
-                            bots_crashed[bot.name] = True
+                            bots_crashed[bot.name] |= True
 
         for projectile in new_projectiles:
             pos = pygame.Vector2(projectile.x, projectile.y)
@@ -128,7 +141,7 @@ class Brainless:
             for bot in self.bots:
                 bot_new_pos = bots_new_pos[bot.name]
                 if pos == bot_new_pos:
-                    bots_crashed[bot.name] = True
+                    bots_crashed[bot.name] |= True
 
         for bot in self.bots:
             bot_cell = self.grid.grid[self.grid.get_bot_cell_idx(bot)]

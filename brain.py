@@ -9,6 +9,14 @@ class Direction(Enum):
     LEFT = pygame.Vector2(-1, 0)
     RIGHT = pygame.Vector2(1, 0)
 
+    def opposite(self):
+        return {
+            Direction.UP: Direction.DOWN,
+            Direction.DOWN: Direction.UP,
+            Direction.LEFT: Direction.RIGHT,
+            Direction.RIGHT: Direction.LEFT
+        }[self]
+
 
 class Action(Enum):
     WAIT = auto()
